@@ -38,24 +38,6 @@ CPUBox:focus, MemBox:focus, DiskBox:focus, NetBox:focus, GPUBox:focus, ProcessBo
     border-title-color: #f5e0dc;
 }
 
-/* Zoom Mode Rules */
-#main_content.has-zoomed CPUBox,
-#main_content.has-zoomed MemBox,
-#main_content.has-zoomed DiskBox,
-#main_content.has-zoomed NetBox,
-#main_content.has-zoomed GPUBox,
-#main_content.has-zoomed ProcessBox,
-#main_content.has-zoomed AlertsBox {
-    display: none;
-}
-
-#main_content.has-zoomed .zoomed {
-    display: block;
-    column-span: 2;
-    height: 1fr;
-    min-height: 100%;
-}
-
 /* Layout Presets */
 
 /* Full Layout */
@@ -127,6 +109,36 @@ CPUBox:focus, MemBox:focus, DiskBox:focus, NetBox:focus, GPUBox:focus, ProcessBo
 #main_content.layout-proc GPUBox,
 #main_content.layout-proc AlertsBox {
     display: none;
+}
+
+/* Zoom Mode Override Rules (Placed after layouts so zoom always takes precedence) */
+#main_content.has-zoomed {
+    grid-size: 1 1;
+    grid-columns: 1fr;
+    grid-rows: 1fr;
+}
+
+#main_content.has-zoomed CPUBox,
+#main_content.has-zoomed MemBox,
+#main_content.has-zoomed DiskBox,
+#main_content.has-zoomed NetBox,
+#main_content.has-zoomed GPUBox,
+#main_content.has-zoomed ProcessBox,
+#main_content.has-zoomed AlertsBox {
+    display: none;
+}
+
+#main_content.has-zoomed CPUBox.zoomed,
+#main_content.has-zoomed MemBox.zoomed,
+#main_content.has-zoomed DiskBox.zoomed,
+#main_content.has-zoomed NetBox.zoomed,
+#main_content.has-zoomed GPUBox.zoomed,
+#main_content.has-zoomed ProcessBox.zoomed,
+#main_content.has-zoomed AlertsBox.zoomed {
+    display: block;
+    column-span: 1;
+    height: 1fr;
+    min-height: 100%;
 }
 
 /* Panel Containers */
