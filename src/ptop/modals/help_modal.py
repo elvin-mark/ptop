@@ -28,6 +28,8 @@ class HelpModal(ModalScreen):
             f"  [bold {t.accent}]Z[/]                 : Toggle Panel Zoom / Fullscreen mode\n"
             f"  [bold {t.accent}]E[/]                 : Export System Performance Snapshot Report (Markdown/JSON)\n"
             f"  [bold {t.accent}]N[/]                 : Open Network Connections & Sockets Inspector\n"
+            f"  [bold {t.accent}]V[/]                 : Open Systemd Services & Units Inspector\n"
+            f"  [bold {t.accent}]H[/]                 : Open Hardware Thermal Sensors & Battery Dashboard\n"
             f"  [bold {t.accent}]A[/]                 : Toggle Health Alerts drawer\n\n"
             f"[bold {t.secondary}]Process Operations[/]\n"
             f"  [bold {t.accent}]/[/]                 : Filter / Search processes by PID, Name, User, or Command\n"

@@ -36,6 +36,8 @@ class FooterBar(Static):
             f"[reverse {t.primary}] Z [/] Zoom",
             f"[reverse {t.primary}] E [/] Export",
             f"[reverse {t.primary}] N [/] Sockets",
+            f"[reverse {t.primary}] V [/] Services",
+            f"[reverse {t.primary}] H [/] Sensors",
             f"[reverse {t.primary}] S [/] Sort",
             f"[reverse {t.primary}] / [/] Filter",
             f"[reverse {t.primary}] T [/] Tree",

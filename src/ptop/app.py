@@ -15,6 +15,8 @@ from ptop.modals.help_modal import HelpModal
 from ptop.modals.kill_modal import KillModal
 from ptop.modals.net_modal import NetSocketsModal
 from ptop.modals.proc_detail_modal import ProcDetailModal
+from ptop.modals.sensors_modal import SensorsModal
+from ptop.modals.services_modal import ServicesModal
 from ptop.reports import export_snapshot_report
 from ptop.theme import THEMES, Theme, get_theme
 from ptop.widgets.alerts_box import AlertsBox
@@ -40,6 +42,8 @@ class PtopApp(App):
         Binding("z", "toggle_zoom", "Zoom Panel", show=False),
         Binding("e", "export_report", "Export Report", show=False),
         Binding("n", "inspect_network", "Net Sockets", show=False),
+        Binding("v", "inspect_services", "Services", show=False),
+        Binding("h", "inspect_sensors", "Sensors", show=False),
         Binding("s", "cycle_sort", "Sort", show=False),
         Binding("r", "toggle_sort_order", "Reverse Sort", show=False),
         Binding("t", "toggle_tree", "Tree Mode", show=False),
@@ -186,6 +190,12 @@ class PtopApp(App):
 
     def action_inspect_network(self) -> None:
         self.push_screen(NetSocketsModal(self.active_theme))
+
+    def action_inspect_services(self) -> None:
+        self.push_screen(ServicesModal(self.active_theme))
+
+    def action_inspect_sensors(self) -> None:
+        self.push_screen(SensorsModal(self.active_theme))
 
     def action_cycle_theme(self) -> None:
         theme_names = list(THEMES.keys())
