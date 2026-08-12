@@ -32,16 +32,22 @@ Screen {
     padding: 0 1;
 }
 
-/* Panel Zoom Mode */
-.zoomed {
-    column-span: 2 !important;
-    height: 1fr !important;
-    min-height: 100% !important;
-    display: block !important;
+/* Zoom Mode Rules */
+#main_content.has-zoomed CPUBox,
+#main_content.has-zoomed MemBox,
+#main_content.has-zoomed DiskBox,
+#main_content.has-zoomed NetBox,
+#main_content.has-zoomed GPUBox,
+#main_content.has-zoomed ProcessBox,
+#main_content.has-zoomed AlertsBox {
+    display: none;
 }
 
-#main_content:has(.zoomed) > *:not(.zoomed) {
-    display: none !important;
+#main_content.has-zoomed .zoomed {
+    display: block;
+    column-span: 2;
+    height: 1fr;
+    min-height: 100%;
 }
 
 /* Layout Presets */

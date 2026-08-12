@@ -157,6 +157,7 @@ class PtopApp(App):
         self.proc_box.move_cursor(10)
 
     def action_toggle_zoom(self) -> None:
+        main_content = self.query_one("#main_content")
         panels = [self.proc_box, self.cpu_box, self.mem_box, self.disk_box, self.net_box, self.gpu_box]
         current_zoomed = next((p for p in panels if p.has_class("zoomed")), None)
 
@@ -165,7 +166,10 @@ class PtopApp(App):
             curr_idx = panels.index(current_zoomed)
             if curr_idx < len(panels) - 1:
                 panels[curr_idx + 1].add_class("zoomed")
+            else:
+                main_content.remove_class("has-zoomed")
         else:
+            main_content.add_class("has-zoomed")
             self.proc_box.add_class("zoomed")
 
         asyncio.create_task(self._update_metrics())
