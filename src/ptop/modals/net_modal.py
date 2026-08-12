@@ -3,7 +3,7 @@
 import psutil
 from rich.text import Text
 from textual.app import ComposeResult
-from textual.containers import Vertical
+from textual.containers import Vertical, VerticalScroll
 from textual.screen import ModalScreen
 from textual.widgets import Button, Static
 
@@ -11,7 +11,7 @@ from ptop.theme import Theme
 
 
 class NetSocketsModal(ModalScreen):
-    """Modal displaying active TCP/UDP network connections."""
+    """Modal displaying all active TCP/UDP network connections with scrolling."""
 
     def __init__(self, theme: Theme):
         super().__init__()
@@ -19,18 +19,14 @@ class NetSocketsModal(ModalScreen):
 
     def compose(self) -> ComposeResult:
         t = self.theme
-        lines = [f"[bold {t.primary}]🌐 ACTIVE NETWORK SOCKETS & CONNECTIONS[/]\n"]
-        lines.append(
-            f"[{t.border_title}]{'PROTO':<6} {'LOCAL ADDRESS':<24} {'REMOTE ADDRESS':<24} {'STATUS':<12} {'PID':>6} {'PROCESS':<16}[/]"
-        )
-        lines.append(f"[{t.text_muted}]" + "─" * 90 + "[/]")
+        lines = []
+
+        header = f"[{t.border_title}]{'PROTO':<6} {'LOCAL ADDRESS':<24} {'REMOTE ADDRESS':<24} {'STATUS':<12} {'PID':>6} {'PROCESS':<16}[/]"
 
         try:
             conns = psutil.net_connections(kind="inet")
             count = 0
             for c in conns:
-                if count >= 25:
-                    break
                 laddr = f"{c.laddr.ip}:{c.laddr.port}" if c.laddr else "*"
                 raddr = f"{c.raddr.ip}:{c.raddr.port}" if c.raddr else "*"
                 proto = "TCP" if c.type == 1 else "UDP"
@@ -60,7 +56,13 @@ class NetSocketsModal(ModalScreen):
             lines.append(f"[{t.error}]Error fetching network connections: {e}[/]")
 
         with Vertical(id="proc_detail_dialog"):
-            yield Static(Text.from_markup("\n".join(lines)), id="net_content")
+            yield Static(
+                Text.from_markup(f"[bold {t.primary}]🌐 ACTIVE NETWORK SOCKETS & CONNECTIONS ({len(lines)})[/]\n"),
+                id="net_header",
+            )
+            yield Static(Text.from_markup(header + "\n" + f"[{t.text_muted}]" + "─" * 90 + "[/]"))
+            with VerticalScroll(id="net_scroll_area"):
+                yield Static(Text.from_markup("\n".join(lines)), id="net_content")
             yield Button("Close (Esc)", variant="primary", id="close_btn")
 
     def on_button_pressed(self, event: Button.Pressed) -> None:

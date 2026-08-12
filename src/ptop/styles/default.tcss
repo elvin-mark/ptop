@@ -205,7 +205,12 @@ ModalScreen {
 }
 
 #proc_detail_dialog {
-    width: 85;
+    width: 90;
+}
+
+#net_scroll_area {
+    max-height: 20;
+    height: auto;
 }
 
 #kill_msg, #filter_msg, #help_content, #proc_detail_content {

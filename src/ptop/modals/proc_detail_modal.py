@@ -2,7 +2,7 @@
 
 from rich.text import Text
 from textual.app import ComposeResult
-from textual.containers import Vertical
+from textual.containers import Vertical, VerticalScroll
 from textual.screen import ModalScreen
 from textual.widgets import Button, Static
 
@@ -28,7 +28,8 @@ class ProcDetailModal(ModalScreen):
             lines.append(f"[bold {t.secondary}]{k}:[/] [{t.text}]{v}[/]")
 
         with Vertical(id="proc_detail_dialog"):
-            yield Static(Text.from_markup("\n".join(lines)), id="proc_detail_content")
+            with VerticalScroll():
+                yield Static(Text.from_markup("\n".join(lines)), id="proc_detail_content")
             yield Button("Close (Esc)", variant="primary", id="close_btn")
 
     def on_button_pressed(self, event: Button.Pressed) -> None:
