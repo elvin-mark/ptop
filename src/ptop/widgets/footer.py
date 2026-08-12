@@ -9,14 +9,7 @@ from ptop.theme import Theme
 class FooterBar(Static):
     """Application bottom shortcut legend bar."""
 
-    def __init__(
-        self,
-        theme: Theme,
-        filter_query: str = "",
-        sort_by: str = "cpu",
-        tree_mode: bool = False,
-        **kwargs,
-    ):
+    def __init__(self, theme: Theme, filter_query: str = "", sort_by: str = "cpu", tree_mode: bool = False, **kwargs):
         super().__init__(**kwargs)
         self.theme = theme
         self.filter_query = filter_query
@@ -40,13 +33,14 @@ class FooterBar(Static):
         shortcuts = [
             f"[reverse {t.primary}] B [/] Theme",
             f"[reverse {t.primary}] L [/] Layout",
+            f"[reverse {t.primary}] Z [/] Zoom",
+            f"[reverse {t.primary}] E [/] Export",
+            f"[reverse {t.primary}] N [/] Sockets",
             f"[reverse {t.primary}] S [/] Sort",
             f"[reverse {t.primary}] / [/] Filter",
             f"[reverse {t.primary}] T [/] Tree",
             f"[reverse {t.primary}] K [/] Kill",
             f"[reverse {t.primary}] I [/] Inspect",
-            f"[reverse {t.primary}] A [/] Alerts",
-            f"[reverse {t.primary}] ? [/] Help",
             f"[reverse {t.error}] Q [/] Quit",
         ]
 

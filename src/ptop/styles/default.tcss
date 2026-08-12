@@ -32,6 +32,18 @@ Screen {
     padding: 0 1;
 }
 
+/* Panel Zoom Mode */
+.zoomed {
+    column-span: 2 !important;
+    height: 1fr !important;
+    min-height: 100% !important;
+    display: block !important;
+}
+
+#main_content:has(.zoomed) > *:not(.zoomed) {
+    display: none !important;
+}
+
 /* Layout Presets */
 
 /* Full Layout */

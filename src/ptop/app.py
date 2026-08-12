@@ -13,7 +13,9 @@ from ptop.metrics.collector import MetricsCollector, SystemSnapshot
 from ptop.modals.filter_modal import FilterModal
 from ptop.modals.help_modal import HelpModal
 from ptop.modals.kill_modal import KillModal
+from ptop.modals.net_modal import NetSocketsModal
 from ptop.modals.proc_detail_modal import ProcDetailModal
+from ptop.reports import export_snapshot_report
 from ptop.theme import THEMES, Theme, get_theme
 from ptop.widgets.alerts_box import AlertsBox
 from ptop.widgets.cpu_box import CPUBox
@@ -35,6 +37,9 @@ class PtopApp(App):
     BINDINGS = [
         Binding("b", "cycle_theme", "Theme", show=False),
         Binding("l", "cycle_layout", "Layout", show=False),
+        Binding("z", "toggle_zoom", "Zoom Panel", show=False),
+        Binding("e", "export_report", "Export Report", show=False),
+        Binding("n", "inspect_network", "Net Sockets", show=False),
         Binding("s", "cycle_sort", "Sort", show=False),
         Binding("r", "toggle_sort_order", "Reverse Sort", show=False),
         Binding("t", "toggle_tree", "Tree Mode", show=False),
@@ -62,6 +67,7 @@ class PtopApp(App):
         self.active_theme: Theme = get_theme(self.config.theme)
         self.collector = MetricsCollector()
         self.alert_mgr = AlertManager()
+        self.last_snapshot: SystemSnapshot | None = None
 
         self.filter_query: str = ""
         self.sort_by: str = self.config.proc_sort_by
@@ -121,6 +127,7 @@ class PtopApp(App):
             filter_query=self.filter_query,
             tree_mode=self.tree_mode,
         )
+        self.last_snapshot = snapshot
 
         active_alerts: list[Alert] = self.alert_mgr.check(snapshot, self.config)
 
@@ -148,6 +155,30 @@ class PtopApp(App):
 
     def action_page_down(self) -> None:
         self.proc_box.move_cursor(10)
+
+    def action_toggle_zoom(self) -> None:
+        panels = [self.proc_box, self.cpu_box, self.mem_box, self.disk_box, self.net_box, self.gpu_box]
+        current_zoomed = next((p for p in panels if p.has_class("zoomed")), None)
+
+        if current_zoomed:
+            current_zoomed.remove_class("zoomed")
+            curr_idx = panels.index(current_zoomed)
+            if curr_idx < len(panels) - 1:
+                panels[curr_idx + 1].add_class("zoomed")
+        else:
+            self.proc_box.add_class("zoomed")
+
+        asyncio.create_task(self._update_metrics())
+
+    def action_export_report(self) -> None:
+        if self.last_snapshot:
+            path = export_snapshot_report(self.last_snapshot, fmt="markdown")
+            self.notify(f"Report saved to {path.name}", title="Snapshot Export")
+        else:
+            self.notify("Metrics loading, try again in a moment.", title="Export Snapshot")
+
+    def action_inspect_network(self) -> None:
+        self.push_screen(NetSocketsModal(self.active_theme))
 
     def action_cycle_theme(self) -> None:
         theme_names = list(THEMES.keys())
