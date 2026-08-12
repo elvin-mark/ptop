@@ -1,0 +1,168 @@
+/* ptop Textual Styling */
+
+Screen {
+    background: #1e1e2e;
+    color: #cdd6f4;
+    layout: vertical;
+}
+
+#app_header {
+    dock: top;
+    height: 1;
+    background: #181825;
+    color: #cdd6f4;
+    padding: 0 1;
+}
+
+#app_footer {
+    dock: bottom;
+    height: 1;
+    background: #181825;
+    color: #cdd6f4;
+    padding: 0 1;
+}
+
+#main_content {
+    height: 1fr;
+    layout: grid;
+    grid-size: 2 5;
+    grid-columns: 1fr 1fr;
+    grid-rows: auto auto auto 1fr auto;
+    grid-gutter: 0 1;
+    padding: 0 1;
+}
+
+/* Layout Presets */
+Screen.layout-full #main_content {
+    grid-size: 2 5;
+    grid-columns: 1fr 1fr;
+    grid-rows: auto auto auto 1fr auto;
+}
+
+Screen.layout-compact #main_content {
+    grid-size: 1 5;
+    grid-columns: 1fr;
+    grid-rows: auto auto auto auto 1fr;
+}
+Screen.layout-compact GPUBox, Screen.layout-compact AlertsBox {
+    display: none;
+}
+
+Screen.layout-gpu #main_content {
+    grid-size: 2 3;
+    grid-columns: 1fr 1fr;
+    grid-rows: auto auto 1fr;
+}
+Screen.layout-gpu DiskBox, Screen.layout-gpu NetBox, Screen.layout-gpu AlertsBox {
+    display: none;
+}
+
+Screen.layout-proc #main_content {
+    grid-size: 2 2;
+    grid-columns: 1fr 1fr;
+    grid-rows: auto 1fr;
+}
+Screen.layout-proc DiskBox, 
+Screen.layout-proc NetBox, 
+Screen.layout-proc GPUBox, 
+Screen.layout-proc AlertsBox {
+    display: none;
+}
+
+/* Panel Containers */
+CPUBox {
+    border: round #89b4fa;
+    border-title-color: #cba6f7;
+    height: auto;
+    min-height: 5;
+    padding: 0 1;
+}
+
+MemBox {
+    border: round #a6e3a1;
+    border-title-color: #cba6f7;
+    height: auto;
+    min-height: 5;
+    padding: 0 1;
+}
+
+DiskBox {
+    border: round #f9e2af;
+    border-title-color: #cba6f7;
+    height: auto;
+    min-height: 5;
+    padding: 0 1;
+}
+
+NetBox {
+    border: round #89dceb;
+    border-title-color: #cba6f7;
+    height: auto;
+    min-height: 5;
+    padding: 0 1;
+}
+
+GPUBox {
+    border: round #fab387;
+    border-title-color: #cba6f7;
+    height: auto;
+    min-height: 3;
+    column-span: 2;
+    padding: 0 1;
+}
+
+ProcessBox {
+    border: round #cba6f7;
+    border-title-color: #cba6f7;
+    height: 1fr;
+    min-height: 8;
+    column-span: 2;
+    padding: 0 1;
+}
+
+AlertsBox {
+    border: heavy #f9e2af;
+    border-title-color: #f9e2af;
+    height: auto;
+    min-height: 3;
+    column-span: 2;
+    padding: 0 1;
+}
+
+/* Sparkline Widgets */
+BrailleSparkline {
+    height: 1;
+    width: 100%;
+}
+
+/* Modal Dialogs */
+ModalScreen {
+    align: center middle;
+    background: rgba(0, 0, 0, 0.7);
+}
+
+#help_dialog, #kill_dialog, #proc_detail_dialog, #filter_dialog {
+    padding: 1 2;
+    background: #181825;
+    border: double #89b4fa;
+    width: 70;
+    height: auto;
+    max-height: 90%;
+}
+
+#proc_detail_dialog {
+    width: 85;
+}
+
+#kill_msg, #filter_msg, #help_content, #proc_detail_content {
+    margin-bottom: 1;
+}
+
+.signal_buttons {
+    margin-bottom: 1;
+    height: 3;
+}
+
+.signal_buttons Button {
+    margin-right: 1;
+}

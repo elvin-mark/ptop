@@ -1,0 +1,38 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "ptop"
+version = "0.1.0"
+description = "A modern, beautiful, and feature-packed terminal system monitor built with Python, Textual, and uv."
+readme = "README.md"
+requires-python = ">=3.11"
+authors = [
+    { name = "Developer" }
+]
+dependencies = [
+    "psutil>=7.0.0",
+    "rich>=14.0.0",
+    "textual>=8.0.0",
+]
+
+[project.scripts]
+ptop = "ptop.cli:main"
+
+[dependency-groups]
+dev = [
+    "pytest>=8.0.0",
+    "ruff>=0.16.2",
+]
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/ptop"]
+
+[tool.ruff]
+line-length = 120
+target-version = "py311"
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "UP", "B", "I"]
+ignore = ["E501"]
