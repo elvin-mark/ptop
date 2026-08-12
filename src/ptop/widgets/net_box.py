@@ -24,6 +24,9 @@ class NetBox(Vertical):
         self.rx_sparkline = BrailleSparkline(color=theme.net_rx_color, id="net_rx_sparkline")
         self.tx_sparkline = BrailleSparkline(color=theme.net_tx_color, id="net_tx_sparkline")
 
+    def on_click(self) -> None:
+        self.focus()
+
     def compose(self) -> ComposeResult:
         yield self.info_label
         yield self.rx_sparkline

@@ -24,6 +24,9 @@ class DiskBox(Vertical):
         self.read_sparkline = BrailleSparkline(color=theme.disk_color, id="disk_read_sparkline")
         self.write_sparkline = BrailleSparkline(color=theme.warning, id="disk_write_sparkline")
 
+    def on_click(self) -> None:
+        self.focus()
+
     def compose(self) -> ComposeResult:
         yield self.info_label
         yield self.read_sparkline

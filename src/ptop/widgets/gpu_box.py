@@ -23,6 +23,9 @@ class GPUBox(Vertical):
         self.info_label = Static(id="gpu_info")
         self.sparkline = BrailleSparkline(color=theme.gpu_color, id="gpu_sparkline")
 
+    def on_click(self) -> None:
+        self.focus()
+
     def compose(self) -> ComposeResult:
         yield self.info_label
         yield self.sparkline

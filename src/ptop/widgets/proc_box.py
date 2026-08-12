@@ -23,6 +23,9 @@ class ProcessBox(Vertical):
         self.items: list[ProcessItem] = []
         self.table_label = Static(id="proc_table")
 
+    def on_click(self) -> None:
+        self.focus()
+
     def compose(self) -> ComposeResult:
         yield self.table_label
 

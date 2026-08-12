@@ -30,6 +30,9 @@ class MemBox(Vertical):
         self.info_label = Static(id="mem_info")
         self.sparkline = BrailleSparkline(color=theme.mem_color, id="mem_sparkline")
 
+    def on_click(self) -> None:
+        self.focus()
+
     def compose(self) -> ComposeResult:
         yield self.info_label
         yield self.sparkline

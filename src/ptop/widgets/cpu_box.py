@@ -22,6 +22,9 @@ class CPUBox(Vertical):
         self.info_label = Static(id="cpu_info")
         self.sparkline = BrailleSparkline(color=theme.cpu_color, id="cpu_sparkline")
 
+    def on_click(self) -> None:
+        self.focus()
+
     def compose(self) -> ComposeResult:
         yield self.info_label
         yield self.sparkline

@@ -165,7 +165,13 @@ class PtopApp(App):
             current_zoomed.remove_class("zoomed")
             main_content.remove_class("has-zoomed")
         else:
-            target = self.focused if self.focused in panels else self.proc_box
+            target = self.proc_box
+            if self.focused:
+                for p in panels:
+                    if self.focused == p or p in self.focused.ancestors:
+                        target = p
+                        break
+
             main_content.add_class("has-zoomed")
             target.add_class("zoomed")
 
