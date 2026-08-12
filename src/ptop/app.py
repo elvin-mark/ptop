@@ -106,9 +106,13 @@ class PtopApp(App):
         self.set_interval(self.config.refresh_rate_ms / 1000.0, self._update_metrics)
 
     def _apply_layout_class(self) -> None:
-        for layout_name in self.LAYOUTS:
-            self.remove_class(f"layout-{layout_name}")
-        self.add_class(f"layout-{self.current_layout}")
+        try:
+            main_content = self.query_one("#main_content")
+            for layout_name in self.LAYOUTS:
+                main_content.remove_class(f"layout-{layout_name}")
+            main_content.add_class(f"layout-{self.current_layout}")
+        except Exception:
+            pass
 
     async def _update_metrics(self) -> None:
         snapshot: SystemSnapshot = await self.collector.collect_all(

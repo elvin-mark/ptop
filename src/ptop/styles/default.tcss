@@ -33,39 +33,75 @@ Screen {
 }
 
 /* Layout Presets */
-Screen.layout-full #main_content {
+
+/* Full Layout */
+#main_content.layout-full {
     grid-size: 2 5;
     grid-columns: 1fr 1fr;
     grid-rows: auto auto auto 1fr auto;
 }
+#main_content.layout-full CPUBox,
+#main_content.layout-full MemBox,
+#main_content.layout-full DiskBox,
+#main_content.layout-full NetBox,
+#main_content.layout-full GPUBox,
+#main_content.layout-full ProcessBox,
+#main_content.layout-full AlertsBox {
+    display: block;
+}
 
-Screen.layout-compact #main_content {
+/* Compact Layout (Single Column) */
+#main_content.layout-compact {
     grid-size: 1 5;
     grid-columns: 1fr;
     grid-rows: auto auto auto auto 1fr;
 }
-Screen.layout-compact GPUBox, Screen.layout-compact AlertsBox {
+#main_content.layout-compact CPUBox,
+#main_content.layout-compact MemBox,
+#main_content.layout-compact DiskBox,
+#main_content.layout-compact NetBox,
+#main_content.layout-compact ProcessBox {
+    display: block;
+    column-span: 1;
+}
+#main_content.layout-compact GPUBox,
+#main_content.layout-compact AlertsBox {
     display: none;
 }
 
-Screen.layout-gpu #main_content {
+/* GPU Focus Layout */
+#main_content.layout-gpu {
     grid-size: 2 3;
     grid-columns: 1fr 1fr;
     grid-rows: auto auto 1fr;
 }
-Screen.layout-gpu DiskBox, Screen.layout-gpu NetBox, Screen.layout-gpu AlertsBox {
+#main_content.layout-gpu CPUBox,
+#main_content.layout-gpu MemBox,
+#main_content.layout-gpu GPUBox,
+#main_content.layout-gpu ProcessBox {
+    display: block;
+}
+#main_content.layout-gpu DiskBox,
+#main_content.layout-gpu NetBox,
+#main_content.layout-gpu AlertsBox {
     display: none;
 }
 
-Screen.layout-proc #main_content {
+/* Process Focus Layout */
+#main_content.layout-proc {
     grid-size: 2 2;
     grid-columns: 1fr 1fr;
     grid-rows: auto 1fr;
 }
-Screen.layout-proc DiskBox, 
-Screen.layout-proc NetBox, 
-Screen.layout-proc GPUBox, 
-Screen.layout-proc AlertsBox {
+#main_content.layout-proc CPUBox,
+#main_content.layout-proc MemBox,
+#main_content.layout-proc ProcessBox {
+    display: block;
+}
+#main_content.layout-proc DiskBox,
+#main_content.layout-proc NetBox,
+#main_content.layout-proc GPUBox,
+#main_content.layout-proc AlertsBox {
     display: none;
 }
 
