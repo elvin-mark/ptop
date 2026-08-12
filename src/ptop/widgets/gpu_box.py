@@ -16,6 +16,7 @@ class GPUBox(Vertical):
 
     def __init__(self, theme: Theme, **kwargs):
         super().__init__(**kwargs)
+        self.can_focus = True
         self.border_title = " GPU "
         self.theme = theme
         self.metrics: GPUMetrics | None = None

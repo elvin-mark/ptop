@@ -163,14 +163,11 @@ class PtopApp(App):
 
         if current_zoomed:
             current_zoomed.remove_class("zoomed")
-            curr_idx = panels.index(current_zoomed)
-            if curr_idx < len(panels) - 1:
-                panels[curr_idx + 1].add_class("zoomed")
-            else:
-                main_content.remove_class("has-zoomed")
+            main_content.remove_class("has-zoomed")
         else:
+            target = self.focused if self.focused in panels else self.proc_box
             main_content.add_class("has-zoomed")
-            self.proc_box.add_class("zoomed")
+            target.add_class("zoomed")
 
         asyncio.create_task(self._update_metrics())
 

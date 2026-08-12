@@ -15,6 +15,7 @@ class CPUBox(Vertical):
 
     def __init__(self, theme: Theme, **kwargs):
         super().__init__(**kwargs)
+        self.can_focus = True
         self.border_title = " CPU "
         self.theme = theme
         self.metrics: CPUMetrics | None = None

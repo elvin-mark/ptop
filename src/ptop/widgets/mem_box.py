@@ -23,6 +23,7 @@ class MemBox(Vertical):
 
     def __init__(self, theme: Theme, **kwargs):
         super().__init__(**kwargs)
+        self.can_focus = True
         self.border_title = " MEMORY & SWAP "
         self.theme = theme
         self.metrics: MemoryMetrics | None = None

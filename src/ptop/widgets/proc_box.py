@@ -15,6 +15,7 @@ class ProcessBox(Vertical):
 
     def __init__(self, theme: Theme, **kwargs):
         super().__init__(**kwargs)
+        self.can_focus = True
         self.border_title = " PROCESSES "
         self.theme = theme
         self.tree_data: ProcessTree | None = None

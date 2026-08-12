@@ -16,6 +16,7 @@ class NetBox(Vertical):
 
     def __init__(self, theme: Theme, **kwargs):
         super().__init__(**kwargs)
+        self.can_focus = True
         self.border_title = " NETWORK "
         self.theme = theme
         self.metrics: NetMetrics | None = None

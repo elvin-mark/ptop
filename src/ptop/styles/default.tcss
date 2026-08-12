@@ -32,6 +32,12 @@ Screen {
     padding: 0 1;
 }
 
+/* Focused Panel Highlight */
+CPUBox:focus, MemBox:focus, DiskBox:focus, NetBox:focus, GPUBox:focus, ProcessBox:focus {
+    border: heavy #cba6f7;
+    border-title-color: #f5e0dc;
+}
+
 /* Zoom Mode Rules */
 #main_content.has-zoomed CPUBox,
 #main_content.has-zoomed MemBox,
