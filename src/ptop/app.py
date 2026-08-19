@@ -47,6 +47,11 @@ class PtopApp(App):
         Binding("s", "cycle_sort", "Sort", show=False),
         Binding("r", "toggle_sort_order", "Reverse Sort", show=False),
         Binding("t", "toggle_tree", "Tree Mode", show=False),
+        Binding("space", "toggle_fold", "Fold/Unfold", show=False),
+        Binding("f", "toggle_fold", "Fold/Unfold", show=False),
+        Binding("F", "toggle_fold_all", "Fold All", show=False),
+        Binding("left", "fold_process", "Fold", show=False),
+        Binding("right", "unfold_process", "Unfold", show=False),
         Binding("slash", "open_filter", "Search", show=False),
         Binding("escape", "clear_filter", "Clear Filter", show=False),
         Binding("k", "kill_process", "Kill", show=False),
@@ -77,6 +82,7 @@ class PtopApp(App):
         self.sort_by: str = self.config.proc_sort_by
         self.sort_reverse: bool = self.config.proc_sort_reverse
         self.tree_mode: bool = self.config.proc_tree_view
+        self.collapsed_pids: set[int] = set()
         self.show_alerts: bool = self.config.show_alerts
         self.current_layout: str = self.config.layout
 
@@ -130,6 +136,7 @@ class PtopApp(App):
             reverse=self.sort_reverse,
             filter_query=self.filter_query,
             tree_mode=self.tree_mode,
+            collapsed_pids=self.collapsed_pids,
         )
         self.last_snapshot = snapshot
 
@@ -159,6 +166,73 @@ class PtopApp(App):
 
     def action_page_down(self) -> None:
         self.proc_box.move_cursor(10)
+
+    def action_toggle_fold(self) -> None:
+        if not self.tree_mode:
+            self.tree_mode = True
+            self.config.proc_tree_view = True
+            self.config.save()
+            asyncio.create_task(self._update_metrics())
+            return
+
+        proc = self.proc_box.get_selected_process()
+        if not proc:
+            return
+
+        if proc.child_count > 0:
+            if proc.pid in self.collapsed_pids:
+                self.collapsed_pids.remove(proc.pid)
+            else:
+                self.collapsed_pids.add(proc.pid)
+            asyncio.create_task(self._update_metrics())
+
+    def action_fold_process(self) -> None:
+        if not self.tree_mode:
+            return
+        proc = self.proc_box.get_selected_process()
+        if not proc:
+            return
+        if proc.child_count > 0 and proc.pid not in self.collapsed_pids:
+            self.collapsed_pids.add(proc.pid)
+            asyncio.create_task(self._update_metrics())
+        elif proc.ppid and proc.depth > 0:
+            for idx, p in enumerate(self.proc_box.items):
+                if p.pid == proc.ppid:
+                    self.proc_box.selected_index = idx
+                    if self.proc_box.tree_data:
+                        self.proc_box.update_metrics(self.proc_box.tree_data, self.active_theme)
+                    break
+
+    def action_unfold_process(self) -> None:
+        if not self.tree_mode:
+            return
+        proc = self.proc_box.get_selected_process()
+        if not proc:
+            return
+        if proc.child_count > 0 and proc.pid in self.collapsed_pids:
+            self.collapsed_pids.remove(proc.pid)
+            asyncio.create_task(self._update_metrics())
+        elif proc.child_count > 0 and proc.pid not in self.collapsed_pids:
+            curr_idx = self.proc_box.selected_index
+            if curr_idx + 1 < len(self.proc_box.items):
+                self.proc_box.selected_index = curr_idx + 1
+                if self.proc_box.tree_data:
+                    self.proc_box.update_metrics(self.proc_box.tree_data, self.active_theme)
+
+    def action_toggle_fold_all(self) -> None:
+        if not self.tree_mode:
+            self.tree_mode = True
+            self.config.proc_tree_view = True
+            self.config.save()
+
+        if self.collapsed_pids:
+            self.collapsed_pids.clear()
+        else:
+            for p in self.proc_box.items:
+                if p.child_count > 0:
+                    self.collapsed_pids.add(p.pid)
+
+        asyncio.create_task(self._update_metrics())
 
     def action_toggle_zoom(self) -> None:
         main_content = self.query_one("#main_content")

@@ -24,6 +24,9 @@ class ProcessItem:
     is_container: bool = False
     children: list["ProcessItem"] = field(default_factory=list)
     depth: int = 0
+    is_collapsed: bool = False
+    child_count: int = 0
+    total_descendants: int = 0
 
 
 @dataclass
@@ -55,6 +58,7 @@ class ProcessCollector:
         reverse: bool = True,
         filter_query: str = "",
         tree_mode: bool = False,
+        collapsed_pids: set[int] | None = None,
     ) -> ProcessTree:
         now = time.time()
         procs_raw: list[ProcessItem] = []
@@ -167,7 +171,7 @@ class ProcessCollector:
             return p.cpu_percent
 
         if tree_mode and not filter_query:
-            # Build tree view
+            collapsed = collapsed_pids or set()
             pid_map: dict[int, ProcessItem] = {p.pid: p for p in procs_raw}
             roots: list[ProcessItem] = []
 
@@ -177,16 +181,30 @@ class ProcessCollector:
                 else:
                     roots.append(p)
 
-            # Sort roots and recursively flatten tree
+            # Calculate descendant counts
+            def count_descendants(node: ProcessItem) -> int:
+                node.child_count = len(node.children)
+                total = len(node.children)
+                for child in node.children:
+                    total += count_descendants(child)
+                node.total_descendants = total
+                return total
+
+            for root in roots:
+                count_descendants(root)
+
+            # Sort roots and recursively flatten tree respecting folding
             roots.sort(key=get_sort_key, reverse=reverse)
             flattened: list[ProcessItem] = []
 
             def flatten(node: ProcessItem, depth: int = 0):
                 node.depth = depth
+                node.is_collapsed = node.pid in collapsed
                 flattened.append(node)
-                node.children.sort(key=get_sort_key, reverse=reverse)
-                for child in node.children:
-                    flatten(child, depth + 1)
+                if not node.is_collapsed:
+                    node.children.sort(key=get_sort_key, reverse=reverse)
+                    for child in node.children:
+                        flatten(child, depth + 1)
 
             for root in roots:
                 flatten(root, depth=0)

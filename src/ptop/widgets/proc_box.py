@@ -11,7 +11,7 @@ from ptop.widgets.mem_box import fmt_bytes
 
 
 class ProcessBox(Vertical):
-    """Widget rendering process table/tree with interactive selection."""
+    """Widget rendering process table/tree with interactive selection and tree folding."""
 
     def __init__(self, theme: Theme, **kwargs):
         super().__init__(**kwargs)
@@ -46,9 +46,9 @@ class ProcessBox(Vertical):
             f"[bold {t.primary}]PROCESSES[/] [{t.text}]Total: {tree_data.total_processes}[/] | [{t.mem_color}]Running: {tree_data.running_count}[/] | [{t.text_muted}]Sleeping: {tree_data.sleeping_count}[/] | [{t.warning}]Stopped: {tree_data.stopped_count}[/]"
         )
 
-        header = f"[{t.border_title}]{'PID':>7} {'USER':<9} {'CPU%':>6} {'MEM%':>6} {'RSS':>9} {'TH':>4} {'DISK I/O':>11} {'NAME / COMMAND':<30}[/]"
+        header = f"[{t.border_title}]{'PID':>7} {'USER':<9} {'CPU%':>6} {'MEM%':>6} {'RSS':>9} {'TH':>4} {'DISK I/O':>11} {'NAME / COMMAND':<32}[/]"
         lines.append(header)
-        lines.append(f"[{t.text_muted}]" + "─" * 90 + "[/]")
+        lines.append(f"[{t.text_muted}]" + "─" * 92 + "[/]")
 
         max_rows = max(5, self.content_size.height - 4) if self.content_size.height > 4 else 15
         start_idx = max(0, min(self.selected_index - max_rows // 2, max(0, len(self.items) - max_rows)))
@@ -58,13 +58,29 @@ class ProcessBox(Vertical):
             actual_idx = start_idx + idx
             is_selected = actual_idx == self.selected_index
 
-            prefix = ""
-            if proc.depth > 0:
-                prefix = "  " * (proc.depth - 1) + "├─ "
+            indent = ("  " * (proc.depth - 1) + "├─") if proc.depth > 0 else ""
 
-            cmd_display = prefix + proc.cmdline
-            if len(cmd_display) > 36:
-                cmd_display = cmd_display[:33] + "..."
+            if proc.child_count > 0:
+                if proc.is_collapsed:
+                    branch_icon = f"[{t.secondary}]▶[dim]+{proc.child_count}[/] [/]"
+                    plain_branch = f"▶+{proc.child_count} "
+                else:
+                    branch_icon = f"[{t.primary}]▼[/] "
+                    plain_branch = "▼ "
+            else:
+                branch_icon = "" if proc.depth == 0 else " "
+                plain_branch = "" if proc.depth == 0 else " "
+
+            tree_prefix = f"[{t.text_muted}]{indent}[/]{branch_icon}" if indent else branch_icon
+            plain_prefix = indent + plain_branch
+
+            max_cmd_len = 32
+            raw_cmd = proc.cmdline
+            avail_len = max(10, max_cmd_len - len(plain_prefix))
+            if len(raw_cmd) > avail_len:
+                raw_cmd = raw_cmd[: max(0, avail_len - 3)] + "..."
+
+            cmd_display = f"{tree_prefix}{raw_cmd}"
 
             container_badge = f" [{t.secondary}][DOCKER][/]" if proc.is_container else ""
 
@@ -76,7 +92,7 @@ class ProcessBox(Vertical):
 
             row_str = (
                 f"{proc.pid:>7} {proc.user[:9]:<9} [{cpu_color}]{proc.cpu_percent:>6.1f}[/] [{mem_color}]{proc.mem_percent:>6.1f}[/] "
-                f"{fmt_bytes(proc.mem_rss_bytes):>9} {proc.threads:>4} {disk_io_str:>11} {cmd_display:<30}{container_badge}"
+                f"{fmt_bytes(proc.mem_rss_bytes):>9} {proc.threads:>4} {disk_io_str:>11} {cmd_display:<32}{container_badge}"
             )
 
             if is_selected:

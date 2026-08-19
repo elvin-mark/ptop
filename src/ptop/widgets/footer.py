@@ -27,7 +27,7 @@ class FooterBar(Static):
         t = self.theme
 
         filter_str = f" [{t.warning}]Filter: '{self.filter_query}'[/]" if self.filter_query else ""
-        tree_str = f" [{t.secondary}][TREE][/]" if self.tree_mode else ""
+        tree_str = f" [{t.secondary}][TREE: Space/F Fold][/]" if self.tree_mode else ""
         sort_str = f" [{t.primary}]Sort:{self.sort_by.upper()}[/]"
 
         shortcuts = [

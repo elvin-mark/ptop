@@ -2,7 +2,7 @@
 
 from rich.text import Text
 from textual.app import ComposeResult
-from textual.containers import Vertical
+from textual.containers import Vertical, VerticalScroll
 from textual.screen import ModalScreen
 from textual.widgets import Button, Static
 
@@ -31,12 +31,15 @@ class HelpModal(ModalScreen):
             f"  [bold {t.accent}]V[/]                 : Open Systemd Services & Units Inspector\n"
             f"  [bold {t.accent}]H[/]                 : Open Hardware Thermal Sensors & Battery Dashboard\n"
             f"  [bold {t.accent}]A[/]                 : Toggle Health Alerts drawer\n\n"
-            f"[bold {t.secondary}]Process Operations[/]\n"
+            f"[bold {t.secondary}]Process Operations & Tree Folding[/]\n"
+            f"  [bold {t.accent}]T[/]                 : Toggle Process Tree hierarchy view\n"
+            f"  [bold {t.accent}]Space / f[/]         : Fold / Unfold selected process subtree\n"
+            f"  [bold {t.accent}]Left / Right[/]      : Collapse branch / Expand branch (or jump to parent/child)\n"
+            f"  [bold {t.accent}]Shift+F / F[/]       : Fold all / Unfold all process branches\n"
             f"  [bold {t.accent}]/[/]                 : Filter / Search processes by PID, Name, User, or Command\n"
             f"  [bold {t.accent}]Esc[/]               : Clear active process filter\n"
             f"  [bold {t.accent}]S[/]                 : Cycle process sort column (CPU%, MEM%, PID, Name, Disk I/O, User)\n"
             f"  [bold {t.accent}]R[/]                 : Reverse process sort direction\n"
-            f"  [bold {t.accent}]T[/]                 : Toggle Process Tree hierarchy view\n"
             f"  [bold {t.accent}]I / Enter[/]         : Inspect detailed process information (Files, Connections, Threads)\n"
             f"  [bold {t.accent}]K[/]                 : Send signal to selected process (SIGKILL 9, SIGTERM 15, etc.)\n\n"
             f"[bold {t.secondary}]General[/]\n"
@@ -45,7 +48,8 @@ class HelpModal(ModalScreen):
         )
 
         with Vertical(id="help_dialog"):
-            yield Static(Text.from_markup(help_text), id="help_content")
+            with VerticalScroll():
+                yield Static(Text.from_markup(help_text), id="help_content")
             yield Button("Close (Esc)", variant="primary", id="close_btn")
 
     def on_button_pressed(self, event: Button.Pressed) -> None:

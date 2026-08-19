@@ -39,6 +39,7 @@ class MetricsCollector:
         reverse: bool = True,
         filter_query: str = "",
         tree_mode: bool = False,
+        collapsed_pids: set[int] | None = None,
     ) -> SystemSnapshot:
         loop = asyncio.get_running_loop()
 
@@ -55,6 +56,7 @@ class MetricsCollector:
             reverse,
             filter_query,
             tree_mode,
+            collapsed_pids,
         )
 
         cpu, memory, disk, net, gpu, procs = await asyncio.gather(

@@ -44,3 +44,25 @@ def test_process_collector():
     tree = coll.collect(sort_by="cpu", reverse=True)
     assert tree.total_processes > 0
     assert len(tree.items) > 0
+
+
+def test_process_collector_tree_and_folding():
+    coll = ProcessCollector()
+    tree = coll.collect(sort_by="cpu", reverse=True, tree_mode=True)
+    assert tree.total_processes > 0
+    assert len(tree.items) > 0
+
+    # Find a process that has children
+    parent_with_children = next((p for p in tree.items if p.child_count > 0), None)
+    if parent_with_children:
+        # Test collapsing that PID
+        folded_tree = coll.collect(
+            sort_by="cpu",
+            reverse=True,
+            tree_mode=True,
+            collapsed_pids={parent_with_children.pid},
+        )
+        assert len(folded_tree.items) < len(tree.items)
+        folded_item = next((p for p in folded_tree.items if p.pid == parent_with_children.pid), None)
+        assert folded_item is not None
+        assert folded_item.is_collapsed is True
